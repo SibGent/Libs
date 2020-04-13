@@ -59,7 +59,7 @@ function onShake(object, options)
             options.listener()
         end
 
-    elseif options.iterations > 0 then
+    elseif options.iterations ~= 0 then
         runTransition(object)
     end
 end
@@ -85,7 +85,7 @@ function onZoomInOut(object, options)
             options.listener()
         end
 
-    elseif options.iterations > 0 then
+    elseif options.iterations ~= 0 then
         runTransition(object)
     end
 end
