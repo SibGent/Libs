@@ -5,6 +5,7 @@ local transitionLists = {}
 local defineTransition
 , runTransition
 , onShake
+, onShakeHorizontal
 , onZoomInOut
 
 function M.stop(tag)
@@ -13,6 +14,10 @@ end
 
 function M.shake(object, options)
     onShake(object, options)
+end
+
+function M.shakeHorizonal(object, options)
+    onShakeHorizontal(object, options)
 end
 
 function M.zoomInOut(object, options)
@@ -49,6 +54,31 @@ function onShake(object, options)
             if options.iterations > 0 then
                 options.iterations = options.iterations - 1
                 onShake(object, options)
+            end
+
+        end },
+    })
+
+    if options.iterations == 0 then
+        if options.listener then
+            options.listener()
+        end
+
+    elseif options.iterations ~= 0 then
+        runTransition(object)
+    end
+end
+
+
+function onShakeHorizontal(object, options)
+
+    defineTransition(object, {
+        { tag="shake", time=options.time, x=object.x - object.width*options.percent, transition=easing.continuousLoop },
+        { tag="shake", time=options.time/2, x=object.x + object.width*options.percent, transition=easing.continuousLoop, onComplete=function()
+
+            if options.iterations > 0 then
+                options.iterations = options.iterations - 1
+                onShakeHorizontal(object, options)
             end
 
         end },
