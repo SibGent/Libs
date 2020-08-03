@@ -9,17 +9,6 @@ local platformList
 
 local isPlatformAllowed
 
-local levelState = {
-    start = "level_start",
-    fail = "level_end",
-    complete = "level_end",
-}
-
-local levelSuccess = {
-    fail = 0,
-    complete = 1,
-}
-
 function M.init(options)
     if isDevice then
         if isPlatformAllowed(options) then
@@ -29,60 +18,19 @@ function M.init(options)
     end
 end
 
-
-function M.selectContent(...)
+function M.selectContent(content_type, item_id)
     if not isInit then
         return
     end
 
-    local value, arg1, arg2, arg3
-
-    if type(arg[1]) == "number" then
-        value = arg[1]
-        arg1 = arg[2]
-        arg2 = arg[3]
-        arg3 = arg[4]
-    else
-        arg1 = arg[1]
-        arg2 = arg[2]
-        arg3 = arg[3]
-    end
-
     local params = {}
-	params.content_type = arg1
-	params.item_id = arg2
+	params.content_type = content_type
+	params.item_id = item_id
 
     FirebaseAnalytics.logEvent("select_content", params)
 end
 
-
-function M.setProgress(state, ...)
-    if not isInit then
-        return
-    end
-
-    local score, arg1, arg2, arg3
-
-    if type(arg[1]) == "number" then
-        score = arg[1]
-        arg1 = arg[2] and tostring(arg[2]) or ""
-        arg2 = arg[3] and tostring(arg[3]) or ""
-        arg3 = arg[4] and tostring(arg[4]) or ""
-    else
-        arg1 = arg[1] and tostring(arg[1]) or ""
-        arg2 = arg[2] and tostring(arg[2]) or ""
-        arg3 = arg[3] and tostring(arg[3]) or ""
-    end
-
-    local params = {}
-	params.level_name = arg1 .. ":" .. arg2
-	params.success = levelSuccess[state]
-
-    FirebaseAnalytics.logEvent(levelState[state], params)
-end
-
-
-function M.addResource(currency, amount, item_type, item_id)
+function M.addCurrency(currency, amount)
     if not isInit then
         return
     end
@@ -94,28 +42,42 @@ function M.addResource(currency, amount, item_type, item_id)
     FirebaseAnalytics.logEvent("earn_virtual_currency", params)
 end
 
-
-function M.subResource(currency, amount, item_type, item_id)
+function M.subCurrency(currency, amount, item_name)
     if not isInit then
         return
     end
 
     local params = {}
-    params.item_name = item_id
     params.virtual_currency_name = currency
     params.value = amount
+    params.item_name = item_name
 
     FirebaseAnalytics.logEvent("spend_virtual_currency", params)
 end
 
-
-function M.purchaseItem(cart_type, item_type, item_id, amount, currency)
+function M.unlockAchievement(achievement_id)
     if not isInit then
         return
     end
 
+    local params = {}
+    params.achievement_id = achievement_id
+
+    FirebaseAnalytics.logEvent("unlock_achievement", params)
 end
 
+function M.postScore(score, level, character)
+    if not isInit then
+        return
+    end
+
+    local params = {}
+    params.score = score
+    params.level = level
+    params.character = character
+
+    FirebaseAnalytics.logEvent("post_score", params)
+end
 
 -- private
 function isPlatformAllowed(options)

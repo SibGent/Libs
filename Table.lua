@@ -43,6 +43,16 @@ function table.deepcopy(orig)
 	return copy
 end
 
+function table.count(t)
+	local count = 0
+
+    for k, v in pairs(t) do
+        count = count + 1
+    end
+
+    return count
+end
+
 function table.print(t)
 	local print_r_cache={}
 	local function sub_print_r(t,indent)

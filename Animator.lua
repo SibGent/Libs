@@ -48,10 +48,10 @@ end
 function onShake(object, options)
 
     defineTransition(object, {
-        { tag="shake", time=options.time, rotation=object.rotation - options.rotation, transition=easing.continuousLoop },
-        { tag="shake", time=options.time/2, rotation=object.rotation + options.rotation/2, transition=easing.continuousLoop, onComplete=function()
+        { tag=options.tag, time=options.time, rotation=object.rotation - options.rotation, transition=easing.continuousLoop },
+        { tag=options.tag, time=options.time/2, rotation=object.rotation + options.rotation/2, transition=easing.continuousLoop, onComplete=function()
 
-            if options.iterations > 0 then
+            if options.iterations ~= 0 then
                 options.iterations = options.iterations - 1
                 onShake(object, options)
             end
@@ -73,10 +73,10 @@ end
 function onShakeHorizontal(object, options)
 
     defineTransition(object, {
-        { tag="shake", time=options.time, x=object.x - object.width*options.percent, transition=easing.continuousLoop },
-        { tag="shake", time=options.time/2, x=object.x + object.width*options.percent, transition=easing.continuousLoop, onComplete=function()
+        { tag=options.tag, time=options.time, x=object.x - object.width*options.percent, transition=easing.continuousLoop },
+        { tag=options.tag, time=options.time/2, x=object.x + object.width*options.percent, transition=easing.continuousLoop, onComplete=function()
 
-            if options.iterations > 0 then
+            if options.iterations ~= 0 then
                 options.iterations = options.iterations - 1
                 onShakeHorizontal(object, options)
             end
@@ -98,9 +98,9 @@ end
 function onZoomInOut(object, options)
 
     defineTransition(object, {
-        { tag="zoomInOut", time=options.time, xScale=options.scaleIn, yScale=options.scaleIn },
-        { tag="zoomInOut", time=options.time, xScale=options.scaleOut, yScale=options.scaleOut },
-        { tag="zoomInOut", time=options.time, xScale=1, yScale=1, onComplete=function()
+        { tag=options.tag, time=options.time, xScale=options.scaleIn, yScale=options.scaleIn },
+        { tag=options.tag, time=options.time, xScale=options.scaleOut, yScale=options.scaleOut },
+        { tag=options.tag, time=options.time, xScale=1, yScale=1, onComplete=function()
 
             if options.iterations ~= 0 then
                 options.iterations = options.iterations - 1

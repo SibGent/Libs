@@ -1,16 +1,14 @@
 local M = {}
 
-
 local analyticsList = {}
 
 local interface = {
     "selectContent",
-    "setProgress",
-    "addResource",
-    "subResource",
-    "purchaseItem"
+    "addCurrency",
+    "subCurrency",
+    "unlockAchievement",
+    "postScore",
 }
-
 
 function M.init(params)
     params = params or {}
@@ -30,7 +28,6 @@ function M.init(params)
     end
 end
 
-
 function M.add(module, ...)
     analyticsList[1 + #analyticsList] = {
         module = require(module),
@@ -38,45 +35,33 @@ function M.add(module, ...)
     }
 end
 
-
 function M.selectContent(content_type, item_id)
     assert(content_type, "bad argument #1 to 'selectContent' (string expected, got no value)")
     assert(item_id, "bad argument #2 to 'selectContent' (string expected, got no value)")
     execFunction("selectContent", content_type, item_id)
 end
 
-
-function M.setProgress(state, ...)
-    assert(state, "bad argument #1 to 'setProgress' (string expected, got no value)")
-    execFunction("setProgress", state, ...)
+function M.addCurrency(currency, amount)
+    assert(currency, "bad argument #1 to 'addCurrency' (string expected, got no value)")
+    assert(amount, "bad argument #2 to 'addCurrency' (number expected, got no value)")
+    execFunction("addCurrency", currency, amount)
 end
 
-
-function M.addResource(currency, amount, item_type, item_id)
-    assert(currency, "bad argument #1 to 'addResource' (string expected, got no value)")
-    assert(amount, "bad argument #2 to 'addResource' (number expected, got no value)")
-    assert(item_type, "bad argument #3 to 'addResource' (string expected, got no value)")
-    assert(item_id, "bad argument #4 to 'addResource' (string expected, got no value)")
-    execFunction("addResource", currency, amount, item_type, item_id)
+function M.subCurrency(currency, amount, item_name)
+    assert(currency, "bad argument #1 to 'subCurrency' (string expected, got no value)")
+    assert(amount, "bad argument #2 to 'subCurrency' (number expected, got no value)")
+    assert(item_name, "bad argument #3 to 'subCurrency' (string expected, got no value)")
+    execFunction("subCurrency", currency, amount, item_name)
 end
 
-
-function M.subResource(currency, amount, item_type, item_id)
-    assert(currency, "bad argument #1 to 'subResource' (string expected, got no value)")
-    assert(amount, "bad argument #2 to 'subResource' (number expected, got no value)")
-    assert(item_type, "bad argument #3 to 'subResource' (string expected, got no value)")
-    assert(item_id, "bad argument #4 to 'subResource' (string expected, got no value)")
-    execFunction("subResource", currency, amount, item_type, item_id)
+function M.unlockAchievement(achievement_id)
+    assert(achievement_id, "bad argument #1 to 'unlockAchievement' (string expected, got no value)")
+    execFunction("unlockAchievement", achievement_id)
 end
 
-
-function M.purchaseItem(cart_type, item_type, item_id, amount, currency)
-    assert(cart_type, "bad argument #1 to 'purchaseItem' (string expected, got no value)")
-    assert(item_type, "bad argument #2 to 'purchaseItem' (string expected, got no value)")
-    assert(item_id, "bad argument #3 to 'purchaseItem' (string expected, got no value)")
-    assert(amount, "bad argument #4 to 'purchaseItem' (number expected, got no value)")
-    assert(currency, "bad argument #5 to 'purchaseItem' (string expected, got no value)")
-    execFunction("purchaseItem", cart_type, item_type, item_id, amount, currency)
+function M.postScore(score, level, character)
+    assert(score, "bad argument #1 to 'postScore' (string expected, got no value)")
+    execFunction("postScore", achievement_id)
 end
 
 -- private

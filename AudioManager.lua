@@ -55,6 +55,16 @@ function M.stopMusic(channelId)
 end
 
 
+function M.pauseMusic(channelId)
+    audio.pause(musicChannels[channelId])
+end
+
+
+function M.resumeMusic(channelId)
+    audio.resume(musicChannels[channelId])
+end
+
+
 function M.playSound(soundId)
     if canPlaySound then
         audio.play(soundHandle[soundId])
