@@ -18,6 +18,12 @@ local supportedPlugins = {
     ["appodeal"] = "Libs.Ads.AdapterAppodeal",
 }
 
+local delayAdTable = {
+    ["interstitial"] = 0,
+    ["rewardedVideo"] = 0,
+}
+local delayAdTime = 60 -- in seconds
+
 local eventTable = {}
 
 local isPlatformAllowed
@@ -48,6 +54,20 @@ function M.load(adType, params)
     end
 
     plugin.load(adType, params)
+end
+
+function M.canShow(adType)
+    if not isInit then
+        return
+    end
+
+    local shownTime = delayAdTable[adType] or 0
+
+    if os.time() - shownTime < delayAdTime then
+        return false
+    end
+
+    return true
 end
 
 function M.isLoaded(adType)
@@ -118,6 +138,9 @@ end
 function adListener(event)
     if event.phase == "init" then
        isInit = true
+    
+    elseif event.phase == "closed" then
+        delayAdTable[event.type] = os.time()
     end
 
     executeEventTable(event)

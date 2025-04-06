@@ -24,8 +24,8 @@ function M.selectContent(content_type, item_id)
     end
 
     local params = {}
-	params.content_type = content_type
-	params.item_id = item_id
+    params.content_type = content_type
+    params.item_id = item_id
 
     FirebaseAnalytics.logEvent("select_content", params)
 end

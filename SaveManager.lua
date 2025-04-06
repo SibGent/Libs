@@ -6,8 +6,7 @@ local config
 local onLoad
 local onSave
 
-local FILENAME = "save.json"
-local BASE_DIR = system.DocumentsDirectory
+local SAVE_DIR = system.pathForFile("save.json", system.DocumentsDirectory)
 local SAVE = {}
 
 local initConfig
@@ -22,7 +21,7 @@ end
 
 
 function M.load()
-    local file = io.open(system.pathForFile(FILENAME, BASE_DIR), "r")
+    local file = io.open(SAVE_DIR, "r")
 
     if file then
         local content = file:read("*a")
@@ -30,7 +29,7 @@ function M.load()
 
         if not SAVE then
             SAVE = {}
-            native.showAlert("Warning", "save file is corrupted", {"OK"})
+            native.showAlert("Warning", "local save file is corrupted", { "OK" })
         end
 
         io.close(file)
@@ -42,15 +41,14 @@ end
 
 
 function M.save()
-	local path = system.pathForFile(FILENAME, BASE_DIR)
-	local file = io.open(path, "w+")
+    local file = io.open(SAVE_DIR, "w+")
 
-	if file then
-		local encoded = json.encode(SAVE, { indent = true })
-		file:write(encoded)
+    if file then
+        local encoded = json.encode(SAVE, { indent = true })
+        file:write(encoded)
 
-		io.close(file)
-	end
+        io.close(file)
+    end
 
     executeListener(onSave)
 end
@@ -152,7 +150,7 @@ end
 
 
 function executeListener(listener)
-    if listener then
+    if type(listener) == "function" then
         listener()
     end
 end
