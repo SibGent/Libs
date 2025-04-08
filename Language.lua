@@ -40,6 +40,11 @@ function M.getLanguageId()
     return languageId
 end
 
+function M.setLanguageId(locale)
+    languageId = locale
+    data = getLanguageData(languageId)
+end
+
 function M.get(key)
     return data[key] or ( "<" .. key .. ">" )
 end
