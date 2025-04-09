@@ -23,6 +23,10 @@ function BackEvent.back(options)
 end
 
 function BackEvent.add(sceneName)
+    if sceneName == stack[#stack] then
+        return
+    end
+
     table.insert(stack, sceneName)
 end
 
