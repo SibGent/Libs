@@ -118,7 +118,14 @@ end
 
 
 function M.setDump(content, isJson)
-    SAVE = (isJson) and json.decode(content) or content
+    if isJson then
+        local decoded = json.decode(content)
+        if type(decoded) == "table" then
+            SAVE = decoded
+        end
+    else
+        SAVE = content
+    end
 end
 
 
