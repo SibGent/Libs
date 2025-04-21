@@ -1,4 +1,5 @@
 function table.shuffle(t)
+    if type(t) ~= "table" then return t end
     local rand = math.random
 
     for i = #t, 2, -1 do
@@ -10,45 +11,33 @@ function table.shuffle(t)
 end
 
 function table.shallowcopy(orig)
-    local orig_type = type(orig)
-    local copy
+    if type(orig) ~= "table" then return orig end
+    local copy = {}
 
-    if orig_type == "table" then
-        copy = {}
-
-        for k, v in pairs(orig) do
-            copy[k] = v
-        end
-    else
-        copy = orig
+    for k, v in pairs(orig) do
+        copy[k] = v
     end
 
     return copy
 end
 
 function table.deepcopy(orig)
-    local orig_type = type(orig)
-    local copy
+    if type(orig) ~= "table" then return orig end
+    local copy = {}
 
-    if orig_type == 'table' then
-        copy = {}
-
-        for k, v in next, orig, nil do
-            copy[table.deepcopy(k)] = table.deepcopy(v)
-        end
-
-        setmetatable(copy, table.deepcopy(getmetatable(orig)))
-    else
-        copy = orig
+    for k, v in next, orig, nil do
+        copy[table.deepcopy(k)] = table.deepcopy(v)
     end
 
+    setmetatable(copy, table.deepcopy(getmetatable(orig)))
     return copy
 end
 
 function table.length(t)
+    if type(t) ~= "table" then return 0 end
     local count = 0
 
-    for k, v in pairs(t) do
+    for _, _ in pairs(t) do
         count = count + 1
     end
 
@@ -57,6 +46,7 @@ end
 
 function table.getKeys(t)
     local keys = {}
+    if type(t) ~= "table" then return keys end
 
     for k in pairs(t) do
         keys[1 + #keys] = k
@@ -67,6 +57,7 @@ end
 
 function table.getValues(t)
     local values = {}
+    if type(t) ~= "table" then return values end
 
     for _, v in pairs(t) do
         values[1 + #values] = v
@@ -76,35 +67,39 @@ function table.getValues(t)
 end
 
 function table.print(t)
-    local print_r_cache={}
-    local function sub_print_r(t,indent)
-        if (print_r_cache[tostring(t)]) then
-            print(indent.."*"..tostring(t))
-        else
-            print_r_cache[tostring(t)]=true
-            if (type(t)=="table") then
-                for pos,val in pairs(t) do
-                    if (type(val)=="table") then
-                        print(indent.."["..pos.."] => "..tostring(t).." {")
-                        sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
-                        print(indent..string.rep(" ",string.len(pos)+6).."}")
-                    elseif (type(val)=="string") then
-                        print(indent.."["..pos..'] => "'..val..'"')
-                    else
-                        print(indent.."["..pos.."] => "..tostring(val))
-                    end
+    local print_r_cache = {}
+
+    local function sub_print_r(tbl, indent)
+        if print_r_cache[tostring(tbl)] then
+            print(indent .. "*" .. tostring(tbl))
+            return
+        end
+
+        print_r_cache[tostring(tbl)] = true
+
+        if type(tbl) == "table" then
+            for pos, val in pairs(tbl) do
+                if type(val) == "table" then
+                    print(indent .. "[" .. tostring(pos) .. "] => " .. tostring(tbl) .. " {")
+                    sub_print_r(val, indent .. "    ")
+                    print(indent .. "}")
+                elseif type(val) == "string" then
+                    print(indent .. "[" .. tostring(pos) .. '] => "' .. val .. '"')
+                else
+                    print(indent .. "[" .. tostring(pos) .. "] => " .. tostring(val))
                 end
-            else
-                print(indent..tostring(t))
             end
+        else
+            print(indent .. tostring(tbl))
         end
     end
-    if (type(t)=="table") then
-        print(tostring(t).." {")
-        sub_print_r(t,"  ")
+
+    if type(t) == "table" then
+        print(tostring(t) .. " {")
+        sub_print_r(t, "  ")
         print("}")
     else
-        sub_print_r(t,"  ")
+        print(tostring(t))
     end
     print()
 end

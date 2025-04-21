@@ -9,6 +9,7 @@ local feedbackRequest
 , tryExecuteListener
 
 function M.init(options)
+    assert(type(options) == "table", "Feedback.init: options must be a table")
     settings = options
 end
 

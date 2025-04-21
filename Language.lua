@@ -17,6 +17,7 @@ local getLocale
 
 function M.init(options)
     assert(options.directory, "option 'directory' is required")
+    assert(type(options.localizations) == "table" and #options.localizations > 0, "option 'localizations' must be a non-empty table")
     directory = options.directory
     localizations = options.localizations
 
@@ -78,7 +79,7 @@ function getLanguageData(lang)
 end
 
 function getFilename(lang)
-    lang = lang:match("(%w+)-?") or ""
+    lang = (lang or ""):match("(%w+)-?") or ""
     return (directory .. lang .. ".json")
 end
 

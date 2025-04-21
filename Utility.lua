@@ -58,6 +58,10 @@ function M.scaleObject(event, value)
 end
 
 function M.getRandomItem(data)
+    if type(data) ~= "table" then
+        return nil
+    end
+
     local total = 0
     local rndWeight = 0
     local currentWeight = 0

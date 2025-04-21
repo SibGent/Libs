@@ -3,7 +3,7 @@ local M = {}
 local topInset, leftInset, bottomInset, rightInset = display.getSafeAreaInsets()
 
 function M.create(params)
-    local params = params or {}
+    params = params or {}
     local color = params.color or {0}
 
     local topBorder = display.newRect(

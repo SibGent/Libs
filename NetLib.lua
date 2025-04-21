@@ -30,7 +30,7 @@ function NetLib.hasConnection()
 end
 
 function NetLib.getRemoteDate()
-    local body, code, headers, status = http.request({
+    local body, code, headers = http.request({
         method = "HEAD",
         url = REMOTE_SERVER,
         create = function()
@@ -44,20 +44,23 @@ function NetLib.getRemoteDate()
     if headers and headers['date'] then
         local DateGMT = headers['date']
         local day, month, year, hour, min, sec = DateGMT:match(PATTERN_GMT)
+
+        if not (day and month and year and hour and min and sec) then
+            return nil
+        end
+
         local dt = os.time() - os.time(os.date("!*t"))
         local unixtime = os.time({
-            day = day,
+            day = tonumber(day),
             month = MONTH_LIST[month],
-            year = year,
-            hour = hour,
-            min = min,
-            sec = sec
+            year = tonumber(year),
+            hour = tonumber(hour),
+            min = tonumber(min),
+            sec = tonumber(sec)
         }) + dt
 
         return unixtime
     end
-
-    http:close()
 
     return nil
 end

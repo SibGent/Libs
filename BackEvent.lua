@@ -23,6 +23,10 @@ function BackEvent.back(options)
 end
 
 function BackEvent.add(sceneName)
+    if sceneName == nil then 
+        return 
+    end
+
     if sceneName == stack[#stack] then
         return
     end
