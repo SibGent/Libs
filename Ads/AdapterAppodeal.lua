@@ -16,7 +16,6 @@ function M.init(options)
         disableWriteExternalPermissionCheck = options.disableWriteExternalPermissionCheck,
         disableNetworks = options.disableNetworks,
         disableAutoCacheForAdTypes = options.disableAutoCacheForAdTypes,
-        hasUserConsent = options.hasUserConsent,
     })
 end
 

@@ -18,11 +18,14 @@ local supportedPlugins = {
     ["appodeal"] = "Libs.Ads.AdapterAppodeal",
 }
 
-local delayAdTable = {
+local latestShownTimeTable = {
     ["interstitial"] = 0,
     ["rewardedVideo"] = 0,
 }
-local delayAdTime = 60 -- in seconds
+local adDelayTimeTable = {
+    ["interstitial"] = 60,
+    ["rewardedVideo"] = 0,
+}
 
 local eventTable = {}
 
@@ -39,12 +42,21 @@ function M.init(options)
     options.adListener = adListener
     options.appKey = getAppKey(options)
 
-    if isDevice then
-        if isPlatformAllowed(options) and not isTurnOff(options) then
-            plugin = require(supportedPlugins[options.plugin])
-            checkInterface(plugin)
-            plugin.init(options)
-        end
+    if not isDevice then
+        return
+    end
+
+    if not isPlatformAllowed(options) and isTurnOff(options) then
+        return
+    end
+
+    plugin = require(supportedPlugins[options.plugin])
+    checkInterface(plugin)
+    plugin.init(options)
+
+    if type(options.delayTime) == "table" then
+        adDelayTimeTable.interstitial = options.delayTime.interstitial or adDelayTimeTable.interstitial
+        adDelayTimeTable.rewardedVideo = options.delayTime.rewardedVideo or adDelayTimeTable.rewardedVideo
     end
 end
 
@@ -61,9 +73,10 @@ function M.canShow(adType)
         return
     end
 
-    local shownTime = delayAdTable[adType] or 0
+    local shownTime = latestShownTimeTable[adType] or 0
+    local delayTime = adDelayTimeTable[adType] or 0
 
-    if os.time() - shownTime < delayAdTime then
+    if os.time() - shownTime < delayTime then
         return false
     end
 
@@ -140,7 +153,7 @@ function adListener(event)
        isInit = true
     
     elseif event.phase == "closed" then
-        delayAdTable[event.type] = os.time()
+        latestShownTimeTable[event.type] = os.time()
     end
 
     executeEventTable(event)
