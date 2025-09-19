@@ -180,7 +180,11 @@ end
 
 function executeEventTable(event)
     for i = 1, #eventTable do
-        eventTable[i](event)
+        local fn = eventTable[i]
+        
+        if type(fn) == "function" then
+            fn(event)
+        end
     end
 end
 
