@@ -1,11 +1,12 @@
 local M = {}
 
-local isDevice  = (system.getInfo("environment") == "device")
+local isSimulator  = (system.getInfo("environment") == "simulator")
 local platform = system.getInfo("platform")
 
 local gameServiceList = {
     android = "Libs.GameService.PlayServices",
     ios ="Libs.GameService.GameCenter",
+    html5 ="Libs.GameService.YandexGames",
 }
 local gameService = nil
 local isInit = false
@@ -14,7 +15,7 @@ local isInit = false
 function M.init(options)
     options = options or { android=true, ios=true }
 
-    if not isDevice then
+    if isSimulator then
         return
     end
 
