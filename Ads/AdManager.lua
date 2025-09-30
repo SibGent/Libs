@@ -16,6 +16,7 @@ local adAdapterInterface = {
 local supportedPlugins = {
     ["admob"] = "Libs.Ads.AdapterAdmob",
     ["appodeal"] = "Libs.Ads.AdapterAppodeal",
+    ["yandex"] = "Libs.Ads.AdapterYandex",
 }
 
 local latestShownTimeTable = {
