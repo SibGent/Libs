@@ -1,6 +1,6 @@
 local M = {}
 
-local isDevice  = (system.getInfo("environment") == "device")
+local isSimulator  = (system.getInfo("environment") == "simulator")
 local platform = system.getInfo("platform")
 local plugin = nil
 local isInit = false
@@ -43,7 +43,7 @@ function M.init(options)
     options.adListener = adListener
     options.appKey = getAppKey(options)
 
-    if not isDevice then
+    if isSimulator then
         return
     end
 
