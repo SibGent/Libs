@@ -11,7 +11,7 @@ end
 
 function M.login(userInitiated, listener)
     gameNetwork.init("gamecenter", function(event)
-        if event.data then
+        if not isActive and event.data then
             isActive = true
 
             if listener then
