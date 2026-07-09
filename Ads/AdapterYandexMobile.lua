@@ -19,6 +19,9 @@ local supportedAdTypes = {}
 local bannerPosition = "top"
 local isTestMode = false
 local externalListener
+local retryTimers = {}
+
+local RETRY_DELAY_MS = 3000
 
 local normalizeType
 , normalizePhase
@@ -28,6 +31,8 @@ local normalizeType
 , loadBanner
 , loadInterstitial
 , loadRewarded
+, cancelRetryTimer
+, scheduleRetry
 , debugLog
 , onPluginEvent
 
@@ -194,6 +199,35 @@ function loadRewarded()
     YandexMobileAds.loadRewarded(configuredAdUnitIds.rewardedVideo)
 end
 
+function cancelRetryTimer(adType)
+    local timerId = retryTimers[adType]
+
+    if timerId then
+        timer.cancel(timerId)
+        retryTimers[adType] = nil
+    end
+end
+
+function scheduleRetry(adType)
+    local loadFn
+
+    if adType == "interstitial" and supportedAdTypes.interstitial then
+        loadFn = loadInterstitial
+    elseif adType == "rewardedVideo" and supportedAdTypes.rewardedVideo then
+        loadFn = loadRewarded
+    else
+        return
+    end
+
+    cancelRetryTimer(adType)
+    debugLog("retry", adType, "delayMs=" .. tostring(RETRY_DELAY_MS))
+
+    retryTimers[adType] = timer.performWithDelay(RETRY_DELAY_MS, function()
+        retryTimers[adType] = nil
+        loadFn()
+    end)
+end
+
 function onPluginEvent(event)
     local adType = normalizeType(event.type)
     local phase = normalizePhase(event.type, event.phase)
@@ -212,9 +246,17 @@ function onPluginEvent(event)
 
     if adType == "interstitial" or adType == "rewardedVideo" then
         if event.phase == "loaded" then
+            cancelRetryTimer(adType)
             loadedState[adType] = true
         elseif event.phase == "shown" or event.phase == "dismissed" or event.phase == "failedToShow" then
             loadedState[adType] = false
+
+            if event.phase == "dismissed" or event.phase == "failedToShow" then
+                scheduleRetry(adType)
+            end
+        elseif event.phase == "failedToLoad" then
+            loadedState[adType] = false
+            scheduleRetry(adType)
         end
     elseif adType == "banner" then
         if event.phase == "failedToLoad" or event.phase == "closed" then
