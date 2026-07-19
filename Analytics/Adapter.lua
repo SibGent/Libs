@@ -8,6 +8,7 @@ local interface = {
     "subCurrency",
     "trackAd",
     "trackProgress",
+    "trackEvent",
 }
 
 local checkInterface
@@ -62,6 +63,12 @@ end
 
 function M.trackProgress(state, ...)
     execFunction("trackProgress", state, ...)
+end
+
+function M.trackEvent(name, params)
+    assert(name, "bad argument #1 to 'trackEvent' (string expected, got no value)")
+    assert(params == nil or type(params) == "table", "bad argument #2 to 'trackEvent' (table expected)")
+    execFunction("trackEvent", name, params or {})
 end
 
 -- private

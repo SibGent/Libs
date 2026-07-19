@@ -155,6 +155,17 @@ function M.trackProgress(state, ...)
         progression03 = arg3,
     })
 end
+
+function M.trackEvent(name)
+    if not isInit then
+        return
+    end
+
+    gameAnalytics.addDesignEvent({
+        eventId = name,
+    })
+end
+
 -- private
 function isPlatformAllowed(options)
     local platformList = options.platformList

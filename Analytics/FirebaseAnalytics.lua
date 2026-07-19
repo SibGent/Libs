@@ -61,6 +61,14 @@ end
 function M.trackProgress()
 end
 
+function M.trackEvent(name, params)
+    if not isInit then
+        return
+    end
+
+    FirebaseAnalytics.logEvent(name, params or {})
+end
+
 -- private
 function isPlatformAllowed(options)
     local platformList = options.platformList
